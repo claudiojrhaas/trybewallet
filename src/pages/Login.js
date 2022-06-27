@@ -8,21 +8,31 @@ class Login extends React.Component {
   state = {
     email: '',
     password: '',
+    isDisabledSendButton: true,
   };
 
   handleChange = ({ target }) => {
     const { name, value } = target;
-    this.setState({ [name]: value });
+    this.setState({ [name]: value }, this.handleEnableButton);
   };
 
   handleClick = () => {
     const { email } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, history } = this.props;
     dispatch(addEmail(email));
+    history.push('/carteira');
+  };
+
+  handleEnableButton = () => {
+    const { password } = this.state;
+    const EXPECTED_PASSWORD_LENGTH = 6;
+    if (password.length >= EXPECTED_PASSWORD_LENGTH) {
+      this.setState({ isDisabledSendButton: false });
+    }
   };
 
   render() {
-    const { email, password } = this.state;
+    const { email, password, isDisabledSendButton } = this.state;
 
     return (
       <div>
@@ -48,10 +58,10 @@ class Login extends React.Component {
         </label>
         <button
           type="button"
-          // disabled={}
+          disabled={ isDisabledSendButton }
           onClick={ this.handleClick }
         >
-          Enviar
+          Entrar
         </button>
       </div>
     );
@@ -60,6 +70,9 @@ class Login extends React.Component {
 
 Login.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect()(Login);
