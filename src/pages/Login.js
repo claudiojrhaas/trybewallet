@@ -1,10 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import { addEmail } from '../actions';
 
 class Login extends React.Component {
   state = {
-    user: '',
+    email: '',
     password: '',
   };
 
@@ -20,17 +22,17 @@ class Login extends React.Component {
   };
 
   render() {
-    const { user, password } = this.state;
+    const { email, password } = this.state;
 
     return (
       <div>
-        <label htmlFor="user">
+        <label htmlFor="email">
           E-mail:
           <input
             data-testid="email-input"
-            name="user"
+            name="email"
             type="email"
-            value={ user }
+            value={ email }
             onChange={ this.handleChange }
           />
         </label>
@@ -55,5 +57,9 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default connect()(Login);
