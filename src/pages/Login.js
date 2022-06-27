@@ -24,10 +24,14 @@ class Login extends React.Component {
   };
 
   handleEnableButton = () => {
-    const { password } = this.state;
+    const { email, password } = this.state;
     const EXPECTED_PASSWORD_LENGTH = 6;
-    if (password.length >= EXPECTED_PASSWORD_LENGTH) {
+    const EXPECTED_EMAIL_SHAPE = /^(\w|\.)+@[a-z]+\.com$/;
+    if (password.length >= EXPECTED_PASSWORD_LENGTH
+      && EXPECTED_EMAIL_SHAPE.test(email) === true) {
       this.setState({ isDisabledSendButton: false });
+    } else {
+      this.setState({ isDisabledSendButton: true });
     }
   };
 
