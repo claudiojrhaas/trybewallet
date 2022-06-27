@@ -1,15 +1,37 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { addEmail } from '../actions';
 
 class Login extends React.Component {
+  state = {
+    user: '',
+    password: '',
+  };
+
+  handleChange = ({ target }) => {
+    const { name, value } = target;
+    this.setState({ [name]: value });
+  };
+
+  handleClick = () => {
+    const { email } = this.state;
+    const { dispatch } = this.props;
+    dispatch(addEmail(email));
+  };
+
   render() {
+    const { user, password } = this.state;
+
     return (
       <div>
-        <label htmlFor="emailUser">
+        <label htmlFor="user">
           E-mail:
           <input
             data-testid="email-input"
-            name="emailUser"
+            name="user"
             type="email"
+            value={ user }
+            onChange={ this.handleChange }
           />
         </label>
         <label htmlFor="password">
@@ -18,12 +40,14 @@ class Login extends React.Component {
             data-testid="password-input"
             name="password"
             type="password"
+            value={ password }
+            onChange={ this.handleChange }
           />
         </label>
         <button
           type="button"
           // disabled={}
-          onClick={ console.log('cliquei') }
+          onClick={ this.handleClick }
         >
           Enviar
         </button>
@@ -32,4 +56,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default connect()(Login);
