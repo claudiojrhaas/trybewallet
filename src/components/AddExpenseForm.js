@@ -11,6 +11,11 @@ class AddExpenseForm extends React.Component {
     tag: '',
   };
 
+  handleChange = ({ target }) => {
+    const { name, value } = target;
+    this.setState({ [name]: value }, this.handleEnableButton);
+  };
+
   render() {
     const { expense, description, currencie, method, tag } = this.state;
     const { currencies } = this.props;
@@ -24,6 +29,7 @@ class AddExpenseForm extends React.Component {
             type="name"
             name="expense"
             value={ expense }
+            onChange={ this.handleChange }
           />
         </label>
         <label htmlFor="description">
@@ -33,6 +39,7 @@ class AddExpenseForm extends React.Component {
             type="textarea"
             name="description"
             value={ description }
+            onChange={ this.handleChange }
           />
         </label>
         <label htmlFor="currencie">
@@ -40,7 +47,9 @@ class AddExpenseForm extends React.Component {
           <select
             type="select"
             name="currencie"
+            id="currencie"
             value={ currencie }
+            onChange={ this.handleChange }
           >
             {
               currencies.map((currEl, index) => (
@@ -55,10 +64,11 @@ class AddExpenseForm extends React.Component {
             data-testid="method-input"
             name="method"
             value={ method }
+            onChange={ this.handleChange }
           >
             <option value="dinheiro">Dinheiro</option>
             <option value="credito">Cartão de crédito</option>
-            <option value="debito">Dartão de débito</option>
+            <option value="debito">Cartão de débito</option>
           </select>
         </label>
         <label htmlFor="tag">
@@ -67,6 +77,7 @@ class AddExpenseForm extends React.Component {
             data-testid="tag-input"
             name="tag"
             value={ tag }
+            onChange={ this.handleChange }
           >
             <option value="alimentacao">Alimentação</option>
             <option value="lazer">Lazer</option>
@@ -85,10 +96,7 @@ const mapStateToProps = (state) => ({
 });
 
 AddExpenseForm.propTypes = {
-  currencies: PropTypes.shape({
-    currencies: PropTypes.string.isRequired,
-    map: PropTypes.func.isRequired,
-  }).isRequired,
+  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default connect(mapStateToProps)(AddExpenseForm);
