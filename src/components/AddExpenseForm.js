@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { sendExpensesInfos } from '../actions';
 
 class AddExpenseForm extends React.Component {
   state = {
-    expense: '',
+    id: 0,
+    value: 0,
     description: '',
-    currencie: '',
-    method: '',
-    tag: '',
+    currency: 'USD',
+    method: 'dinheiro',
+    tag: 'alimentacao', // array de objetos, com cada objeto tendo as chaves id, value, currency, method, tag, description e exchangeRates
   };
 
   handleChange = ({ target }) => {
@@ -16,19 +18,28 @@ class AddExpenseForm extends React.Component {
     this.setState({ [name]: value }, this.handleEnableButton);
   };
 
+  handleClickAddExpense = () => {
+    const { dispatch } = this.props;
+    const { id } = this.state;
+    this.setState((estadoAnterior) => ({
+      id: estadoAnterior.id === id && estadoAnterior.id + 1,
+    }));
+    dispatch(sendExpensesInfos(this.state));
+  };
+
   render() {
-    const { expense, description, currencie, method, tag } = this.state;
+    const { value, description, currency, method, tag } = this.state;
     const { currencies } = this.props;
 
     return (
       <form>
-        <label htmlFor="expense">
+        <label htmlFor="value">
           Despesa:
           <input
             data-testid="value-input"
-            type="name"
-            name="expense"
-            value={ expense }
+            type="number"
+            name="value"
+            value={ value }
             onChange={ this.handleChange }
           />
         </label>
@@ -42,13 +53,13 @@ class AddExpenseForm extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
-        <label htmlFor="currencie">
+        <label htmlFor="currency">
           Moeda:
           <select
             type="select"
-            name="currencie"
-            id="currencie"
-            value={ currencie }
+            name="currency"
+            id="currency"
+            value={ currency }
             onChange={ this.handleChange }
           >
             {
@@ -86,6 +97,13 @@ class AddExpenseForm extends React.Component {
             <option value="saude">Saúde</option>
           </select>
         </label>
+        <button
+          type="button"
+          onClick={ this.handleClickAddExpense }
+        >
+          Adicionar Despesa
+
+        </button>
       </form>
     );
   }
@@ -93,10 +111,12 @@ class AddExpenseForm extends React.Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  expenses: state.wallet.expenses,
 });
 
 AddExpenseForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps)(AddExpenseForm);

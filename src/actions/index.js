@@ -1,12 +1,12 @@
 // Coloque aqui suas actions
 export const ADD_EMAIL = 'ADD_EMAIL';
+export const FETCH_CURRENCIES_SUCCESS = 'FETCH_CURRENCIES_SUCCESS';
+export const SEND_EXPENSES_INFOS = 'SEND_EXPENSES_INFOS';
 
 export const addEmail = (email) => ({
   type: ADD_EMAIL,
   email,
 });
-
-export const FETCH_CURRENCIES_SUCCESS = 'FETCH_CURRENCIES_SUCCESS';
 
 export const fetchCurrenciesSuccess = (currencies) => ({
   type: FETCH_CURRENCIES_SUCCESS,
@@ -20,3 +20,8 @@ export const fetchCurrencies = () => async (dispatch) => {
     currencie !== 'USDT'));
   dispatch(fetchCurrenciesSuccess(filterData));
 };
+
+export const sendExpensesInfos = (expenses) => ({
+  type: SEND_EXPENSES_INFOS,
+  expenses,
+});
