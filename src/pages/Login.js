@@ -13,7 +13,7 @@ class Login extends React.Component {
 
   handleChange = ({ target }) => {
     const { name, value } = target;
-    this.setState({ [name]: value }, this.handleEnableButton);
+    this.setState({ [name]: value }, this.validateSendButton);
   };
 
   handleClick = () => {
@@ -23,12 +23,12 @@ class Login extends React.Component {
     history.push('/carteira');
   };
 
-  handleEnableButton = () => {
+  validateSendButton = () => {
     const { email, password } = this.state;
     const EXPECTED_PASSWORD_LENGTH = 6;
     const EXPECTED_EMAIL_SHAPE = /^(\w|\.)+@[a-z]+\.com$/;
     if (password.length >= EXPECTED_PASSWORD_LENGTH
-      && EXPECTED_EMAIL_SHAPE.test(email) === true) {
+      && email.match(EXPECTED_EMAIL_SHAPE)) {
       this.setState({ isDisabledSendButton: false });
     } else {
       this.setState({ isDisabledSendButton: true });

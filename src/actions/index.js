@@ -1,7 +1,10 @@
+import fetchAPI from '../services';
+
 // Coloque aqui suas actions
 export const ADD_EMAIL = 'ADD_EMAIL';
 export const FETCH_CURRENCIES_SUCCESS = 'FETCH_CURRENCIES_SUCCESS';
-export const SEND_EXPENSES_INFOS = 'SEND_EXPENSES_INFOS';
+export const FETCH_RATES_SUCCESS = 'FETCH_RATES_SUCCESS';
+export const ADD_TOTAL = 'ADD_TOTAL';
 
 export const addEmail = (email) => ({
   type: ADD_EMAIL,
@@ -14,14 +17,22 @@ export const fetchCurrenciesSuccess = (currencies) => ({
 });
 
 export const fetchCurrencies = () => async (dispatch) => {
-  const response = await fetch('https://economia.awesomeapi.com.br/json/all');
-  const data = await response.json();
-  const filterData = Object.keys(data).filter((currencie) => (
-    currencie !== 'USDT'));
+  const data = await fetchAPI();
+  const filterData = Object.keys(data).filter((currency) => (
+    currency !== 'USDT'));
   dispatch(fetchCurrenciesSuccess(filterData));
 };
 
-export const sendExpensesInfos = (expenses) => ({
-  type: SEND_EXPENSES_INFOS,
-  expenses,
+export const fetchRates = (payload) => ({
+  type: FETCH_RATES_SUCCESS,
+  payload,
+});
+
+// export const fetchRates = (state) => async (dispatch) => {
+//   dispatch(fetchRatesSuccess(state));
+// };
+
+export const addTotal = (total) => ({
+  type: ADD_TOTAL,
+  payload: { total },
 });

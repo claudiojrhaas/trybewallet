@@ -1,30 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { sendExpensesInfos } from '../actions';
+import { addTotal, fetchRates } from '../actions';
+import fetchAPI from '../services';
+// import fetchAPI from '../services';
+
+const INITIAL_STATE = {
+  value: 0,
+  description: '',
+  currency: 'USD',
+  method: 'Cartão de crédito',
+  tag: 'Alimentação',
+};
 
 class AddExpenseForm extends React.Component {
   state = {
     id: 0,
-    value: 0,
-    description: '',
-    currency: 'USD',
-    method: 'dinheiro',
-    tag: 'alimentacao', // array de objetos, com cada objeto tendo as chaves id, value, currency, method, tag, description e exchangeRates
+    ...INITIAL_STATE,
   };
 
   handleChange = ({ target }) => {
     const { name, value } = target;
-    this.setState({ [name]: value }, this.handleEnableButton);
+    this.setState({
+      [name]: value,
+    });
   };
 
-  handleClickAddExpense = () => {
+  clearInput = () => {
+    this.setState({
+      ...INITIAL_STATE,
+    });
+  };
+
+  handleClickAddExpense = async () => {
     const { dispatch } = this.props;
-    const { id } = this.state;
-    this.setState((estadoAnterior) => ({
-      id: estadoAnterior.id === id && estadoAnterior.id + 1,
+    const { value, currency, id, description, method, tag } = this.state;
+    const data = await fetchAPI();
+    const objState = {
+      id, value, description, currency, method, tag, exchangeRates: data };
+    const tot = Number(value) * data[currency].ask;
+    dispatch(fetchRates(objState));
+    this.setState((prevState) => ({
+      id: prevState.id + 1,
     }));
-    dispatch(sendExpensesInfos(this.state));
+    dispatch(addTotal(tot));
+    this.clearInput();
   };
 
   render() {
@@ -74,12 +94,13 @@ class AddExpenseForm extends React.Component {
           <select
             data-testid="method-input"
             name="method"
+            id="method"
             value={ method }
             onChange={ this.handleChange }
           >
-            <option value="dinheiro">Dinheiro</option>
-            <option value="credito">Cartão de crédito</option>
-            <option value="debito">Cartão de débito</option>
+            <option>Dinheiro</option>
+            <option>Cartão de crédito</option>
+            <option>Cartão de débito</option>
           </select>
         </label>
         <label htmlFor="tag">
@@ -87,14 +108,15 @@ class AddExpenseForm extends React.Component {
           <select
             data-testid="tag-input"
             name="tag"
+            id="tag"
             value={ tag }
             onChange={ this.handleChange }
           >
-            <option value="alimentacao">Alimentação</option>
-            <option value="lazer">Lazer</option>
-            <option value="trabalho">Trabalho</option>
-            <option value="transporte">Transporte</option>
-            <option value="saude">Saúde</option>
+            <option>Alimentação</option>
+            <option>Lazer</option>
+            <option>Trabalho</option>
+            <option>Transporte</option>
+            <option>Saúde</option>
           </select>
         </label>
         <button

@@ -6,10 +6,6 @@ import Header from '../components/Header';
 import AddExpenseForm from '../components/AddExpenseForm';
 
 class Wallet extends React.Component {
-  state = {
-    // currencies: [],
-  }
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(fetchCurrencies());
