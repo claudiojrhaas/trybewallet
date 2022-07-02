@@ -4,12 +4,12 @@ import { combineReducers } from 'redux';
 
 import user from './user';
 import wallet from './wallet';
-import total from './total';
+import sum from './sum';
 
 const rootReducer = combineReducers({
   user,
   wallet,
-  total,
+  sum,
 });
 
 export default rootReducer;

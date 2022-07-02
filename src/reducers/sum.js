@@ -1,15 +1,15 @@
-import { ADD_TOTAL } from '../actions';
+import { SUM_TOTAL } from '../actions';
 
 const INITIAL_STATE = {
-  total: 0,
+  totalValueBRL: 0,
 };
 
 const total = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-  case ADD_TOTAL:
+  case SUM_TOTAL:
     return {
       ...state,
-      total: state.total + action.payload.total,
+      totalValueBRL: state.totalValueBRL + action.payload.sumValues,
     };
   default: return state;
   }

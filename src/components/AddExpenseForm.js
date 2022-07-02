@@ -38,12 +38,12 @@ class AddExpenseForm extends React.Component {
     const data = await fetchAPI();
     const objState = {
       id, value, description, currency, method, tag, exchangeRates: data };
-    const tot = Number(value) * data[currency].ask;
+    const sumValues = Number(value) * data[currency].ask;
     dispatch(fetchRates(objState));
     this.setState((prevState) => ({
       id: prevState.id + 1,
     }));
-    dispatch(addTotal(tot));
+    dispatch(addTotal(sumValues));
     this.clearInput();
   };
 
@@ -63,6 +63,7 @@ class AddExpenseForm extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
+
         <label htmlFor="description">
           Descrição:
           <input
@@ -73,6 +74,7 @@ class AddExpenseForm extends React.Component {
             onChange={ this.handleChange }
           />
         </label>
+
         <label htmlFor="currency">
           Moeda:
           <select
@@ -89,6 +91,7 @@ class AddExpenseForm extends React.Component {
             }
           </select>
         </label>
+
         <label htmlFor="method">
           Método
           <select
@@ -103,6 +106,7 @@ class AddExpenseForm extends React.Component {
             <option>Cartão de débito</option>
           </select>
         </label>
+
         <label htmlFor="tag">
           Tag
           <select
@@ -119,12 +123,12 @@ class AddExpenseForm extends React.Component {
             <option>Saúde</option>
           </select>
         </label>
+
         <button
           type="button"
           onClick={ this.handleClickAddExpense }
         >
           Adicionar Despesa
-
         </button>
       </form>
     );

@@ -4,7 +4,7 @@ import fetchAPI from '../services';
 export const ADD_EMAIL = 'ADD_EMAIL';
 export const FETCH_CURRENCIES_SUCCESS = 'FETCH_CURRENCIES_SUCCESS';
 export const FETCH_RATES_SUCCESS = 'FETCH_RATES_SUCCESS';
-export const ADD_TOTAL = 'ADD_TOTAL';
+export const SUM_TOTAL = 'SUM_TOTAL';
 
 export const addEmail = (email) => ({
   type: ADD_EMAIL,
@@ -28,11 +28,7 @@ export const fetchRates = (payload) => ({
   payload,
 });
 
-// export const fetchRates = (state) => async (dispatch) => {
-//   dispatch(fetchRatesSuccess(state));
-// };
-
-export const addTotal = (total) => ({
-  type: ADD_TOTAL,
-  payload: { total },
+export const addTotal = (sumValues) => ({
+  type: SUM_TOTAL,
+  payload: { sumValues },
 });
