@@ -85,7 +85,7 @@ class AddExpenseForm extends React.Component {
             onChange={ this.handleChange }
           >
             {
-              currencies.map((currEl, index) => (
+              currencies?.map((currEl, index) => (
                 <option key={ index } value={ currEl }>{ currEl }</option>
               ))
             }

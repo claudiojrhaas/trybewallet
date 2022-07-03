@@ -5,6 +5,8 @@ export const ADD_EMAIL = 'ADD_EMAIL';
 export const FETCH_CURRENCIES_SUCCESS = 'FETCH_CURRENCIES_SUCCESS';
 export const FETCH_RATES_SUCCESS = 'FETCH_RATES_SUCCESS';
 export const SUM_TOTAL = 'SUM_TOTAL';
+export const DELETE_ITEM = 'DELETE_ITEM';
+export const SUB_ITEM = 'SUB_ITEM';
 
 export const addEmail = (email) => ({
   type: ADD_EMAIL,
@@ -31,4 +33,14 @@ export const fetchRates = (payload) => ({
 export const addTotal = (sumValues) => ({
   type: SUM_TOTAL,
   payload: { sumValues },
+});
+
+export const deleteItem = (payload) => ({
+  type: DELETE_ITEM,
+  payload,
+});
+
+export const subItem = (subValues) => ({
+  type: SUB_ITEM,
+  payload: { subValues },
 });
