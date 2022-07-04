@@ -2,6 +2,9 @@ import {
   FETCH_RATES_SUCCESS,
   FETCH_CURRENCIES_SUCCESS,
   DELETE_ITEM,
+  EDIT_ITEM_TRUE,
+  STOP_EDIT,
+  SEND_NEW_DATA,
 } from '../actions';
 
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
@@ -29,8 +32,27 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       expenses: state.expenses
-        .filter((el) => Number(el.id) !== action.payload),
+        .filter((el) => parseFloat(el.id) !== action.payload),
     };
+  case EDIT_ITEM_TRUE:
+    return {
+      ...state,
+      editor: action.payload.editor,
+      idToEdit: action.payload.idToEdit,
+    };
+  case STOP_EDIT:
+    return {
+      ...state,
+      editor: action.payload.editor,
+    };
+  case SEND_NEW_DATA: {
+    const index = action.payload.id;
+    state.expenses[index] = action.payload;
+    return {
+      ...state,
+      expenses: [...state.expenses],
+    };
+  }
   default: return state;
   }
 };

@@ -1,4 +1,4 @@
-import { SUB_ITEM, SUM_TOTAL } from '../actions';
+import { CHANGE_SUBTRACT_VALUE, CHANGE_SUM_VALUE, SUB_ITEM, SUM_TOTAL } from '../actions';
 
 const INITIAL_STATE = {
   totalValueBRL: 0,
@@ -14,7 +14,17 @@ const total = (state = INITIAL_STATE, action) => {
   case SUB_ITEM:
     return {
       ...state,
-      totalValueBRL: state.totalValueBRL - action.payload.subValues,
+      totalValueBRL: Math.abs(state.totalValueBRL - action.payload.subValues),
+    };
+  case CHANGE_SUBTRACT_VALUE:
+    return {
+      ...state,
+      totalValueBRL: Math.abs(state.totalValueBRL - action.payload),
+    };
+  case CHANGE_SUM_VALUE:
+    return {
+      ...state,
+      totalValueBRL: Math.abs(state.totalValueBRL + action.payload),
     };
   default: return state;
   }

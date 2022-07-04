@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addTotal, fetchRates } from '../actions';
+import { addTotal, changeSumValue, fetchRates, sendNewData, stopEdit } from '../actions';
 import fetchAPI from '../services';
 // import fetchAPI from '../services';
 
@@ -15,8 +15,9 @@ const INITIAL_STATE = {
 
 class AddExpenseForm extends React.Component {
   state = {
-    id: 0,
     ...INITIAL_STATE,
+    id: 0,
+    isRenderEditButton: false,
   };
 
   handleChange = ({ target }) => {
@@ -38,7 +39,7 @@ class AddExpenseForm extends React.Component {
     const data = await fetchAPI();
     const objState = {
       id, value, description, currency, method, tag, exchangeRates: data };
-    const sumValues = Number(value) * data[currency].ask;
+    const sumValues = parseFloat(value) * data[currency].ask;
     dispatch(fetchRates(objState));
     this.setState((prevState) => ({
       id: prevState.id + 1,
@@ -47,9 +48,49 @@ class AddExpenseForm extends React.Component {
     this.clearInput();
   };
 
+  handleEditInput = () => {
+    const { idToEdit, expenses } = this.props;
+    const objArr = expenses.find((data) => (
+      data.id === parseFloat(idToEdit)
+    ));
+    this.setState({
+      value: objArr.value,
+      currency: objArr.currency,
+      description: objArr.description,
+      method: objArr.method,
+      tag: objArr.tag,
+      isRenderEditButton: true,
+      exchangeRates: objArr.exchangeRates,
+    });
+
+    const payload = { editor: false };
+    const { dispatch } = this.props;
+    dispatch(stopEdit(payload));
+  };
+
+  handleEditExpense = () => {
+    const { value, currency, description, method, tag, exchangeRates } = this.state;
+    const { dispatch, idToEdit, expenses } = this.props;
+    const payload = {
+      id: idToEdit, value, currency, description, method, tag, exchangeRates,
+    };
+    // console.log(payload);
+    dispatch(sendNewData(payload));
+    this.setState({ isRenderEditButton: false });
+    this.clearInput();
+    const arr = expenses.find((data) => (
+      data.id === parseFloat(idToEdit)
+    ));
+    const sumValue = (arr.value * arr.exchangeRates[arr.currency].ask).toFixed(2);
+    dispatch(changeSumValue(parseFloat(sumValue)));
+  };
+
   render() {
-    const { value, description, currency, method, tag } = this.state;
-    const { currencies } = this.props;
+    const { value, description, currency, method, tag, isRenderEditButton } = this.state;
+    const { currencies, editor } = this.props;
+    if (editor) {
+      this.handleEditInput();
+    }
 
     return (
       <form>
@@ -123,13 +164,23 @@ class AddExpenseForm extends React.Component {
             <option>Saúde</option>
           </select>
         </label>
-
-        <button
-          type="button"
-          onClick={ this.handleClickAddExpense }
-        >
-          Adicionar Despesa
-        </button>
+        {
+          isRenderEditButton
+            ? (
+              <button
+                type="button"
+                onClick={ this.handleEditExpense }
+              >
+                Editar despesa
+              </button>)
+            : (
+              <button
+                type="button"
+                onClick={ this.handleClickAddExpense }
+              >
+                Adicionar Despesa
+              </button>)
+        }
       </form>
     );
   }
@@ -138,11 +189,16 @@ class AddExpenseForm extends React.Component {
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
   expenses: state.wallet.expenses,
+  editor: state.wallet.editor,
+  idToEdit: state.wallet.idToEdit,
 });
 
 AddExpenseForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispatch: PropTypes.func.isRequired,
+  editor: PropTypes.bool.isRequired,
+  idToEdit: PropTypes.number.isRequired,
+  expenses: PropTypes.arrayOf(Object).isRequired,
 };
 
 export default connect(mapStateToProps)(AddExpenseForm);

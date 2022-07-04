@@ -1,20 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { deleteItem, subItem } from '../actions';
+import { changeSubtractValue, deleteItem, editItem, subItem } from '../actions';
 
 class Table extends React.Component {
   onClickExlcudesButton = ({ target }) => {
-    const indexButton = target.id;
+    const indexButton = target.innerHTML === 'Excluir' && target.id;
     const { dispatch, expenses } = this.props;
-    dispatch(deleteItem(Number(indexButton)));
+    dispatch(deleteItem(parseFloat(indexButton)));
     const recoverArr = expenses.find((data) => (
-      data.id === Number(indexButton)
+      data.id === parseFloat(indexButton)
     ));
     const { value, exchangeRates, currency } = recoverArr;
     const countSub = (value * exchangeRates[currency].ask).toFixed(2);
+    dispatch(subItem(parseFloat(countSub)));
+  };
 
-    dispatch(subItem(Number(countSub)));
+  onClickEditButton = ({ target }) => {
+    const indexButton = target.innerHTML === 'Editar' && target.id;
+    const payload = { editor: true, idToEdit: parseFloat(indexButton) };
+    const { dispatch, expenses } = this.props;
+    dispatch(editItem(payload));
+    const arr = expenses.find((data) => (
+      data.id === parseFloat(indexButton)
+    ));
+    const { value, exchangeRates, currency } = arr;
+    const subtractValue = (value * exchangeRates[currency].ask).toFixed(2);
+    dispatch(changeSubtractValue(parseFloat(subtractValue)));
   };
 
   render() {
@@ -41,22 +53,36 @@ class Table extends React.Component {
               <td>{ data.description }</td>
               <td>{ data.tag }</td>
               <td>{ data.method }</td>
-              <td>{ Number(data.value).toFixed(2) }</td>
-              <td>
-                { data.currency === 'USD'
-                  ? 'Dólar Comercial'
-                  : (data.exchangeRates[data.currency].name.split('/')[0]) }
-
-              </td>
-              <td>{ Number(data.exchangeRates[data.currency].ask).toFixed(2) }</td>
+              <td>{ parseFloat(data.value).toFixed(2) }</td>
               <td>
                 {
-                  Number(data.value * data.exchangeRates[data.currency].ask).toFixed(2)
+                  data.currency === 'USD'
+                    ? 'Dólar Comercial'
+                    : (data.exchangeRates[data.currency].name.split('/')[0])
+                }
+
+              </td>
+              <td>
+                { parseFloat(data.exchangeRates[data.currency].ask).toFixed(2) }
+              </td>
+              <td>
+                {
+                  parseFloat(data.value
+                    * data.exchangeRates[data.currency].ask).toFixed(2)
                 }
 
               </td>
               <td>Real</td>
               <td>
+                <button
+                  type="button"
+                  data-testid="edit-btn"
+                  id={ data.id }
+                  onClick={ this.onClickEditButton }
+                >
+                  Editar
+
+                </button>
                 <button
                   data-testid="delete-btn"
                   type="button"
